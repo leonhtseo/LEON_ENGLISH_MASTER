@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 영어 복습기</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; width: 90%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; }
+        .lesson-tag { background: #e8f5e9; color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+        #content { font-size: 1.5rem; color: #333; margin: 30px 0; line-height: 1.6; word-break: keep-all; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        button { background: #4a90e2; color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: 0.3s; width: 100%; }
+        button:hover { background: #357abd; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <span class="lesson-tag" id="lesson-title">준비 완료!</span>
+    <div id="content">버튼을 눌러 복습을 시작하세요.</div>
+    <button onclick="pickRandomLesson()">무작위 복습 시작</button>
+</div>
+
+<script>
+    const SHEET_API_URL = "여기에_아까_복사한_웹_앱_URL_붙여넣기";
+    let lessons = [];
+
+    // 페이지 로드 시 구글 시트에서 데이터 가져오기
+    async function loadLessons() {
+        document.getElementById('content').innerText = "강의 불러오는 중...";
+        try {
+            const response = await fetch(SHEET_API_URL);
+            lessons = await response.json();
+            document.getElementById('total-count').innerText = lessons.length;
+            document.getElementById('content').innerText = "준비 완료! 버튼을 눌러주세요.";
+        } catch (e) {
+            document.getElementById('content').innerText = "데이터를 불러오지 못했습니다.";
+        }
+    }
+
+    function pickRandom() {
+        if (lessons.length === 0) return;
+        const selected = lessons[Math.floor(Math.random() * lessons.length)];
+        document.getElementById('lesson-title').innerText = selected.title;
+        document.getElementById('content').innerText = selected.content;
+    }
+
+    loadLessons();
+</script>
+</body>
+</html>
